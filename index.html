@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory + Personality Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div x-data="memoryApp()" class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🤖 Memory + Personality Engine</h1>
+            <p class="text-gray-600">AI companion that learns your preferences and adapts its personality</p>
+        </div>
+
+        <!-- Chat Messages Input -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">📝 Chat Messages</h2>
+            <p class="text-gray-600 mb-4">Enter your chat messages (one per line) to extract your memory profile:</p>
+            <textarea 
+                x-model="chatMessages"
+                class="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="I love Python programming...
+I'm worried about my project deadline...
+My name is Alex Smith...
+Contact me at alex@example.com...
+I prefer using VSCode for development..."></textarea>
+            
+            <div class="flex gap-4 mt-4">
+                <button 
+                    @click="loadSampleMessages()"
+                    class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                    Load Sample Messages
+                </button>
+                <button 
+                    @click="extractMemory()" 
+                    :disabled="loading || !chatMessages.trim()"
+                    class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    <span x-show="!loading">Extract Memory</span>
+                    <span x-show="loading">Processing...</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Memory Extraction Results -->
+        <div x-show="memoryResults" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">🧠 Extracted Memory</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Preferences -->
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-800 mb-3">🎯 Preferences</h3>
+                    <div x-show="memoryResults?.preferences?.length > 0">
+                        <template x-for="pref in memoryResults.preferences.slice(0, 5)">
+                            <div class="mb-2 p-2 bg-blue-100 rounded text-sm">
+                                <span class="font-medium" x-text="pref.type"></span>: 
+                                <span x-text="pref.value"></span>
+                            </div>
+                        </template>
+                    </div>
+                    <div x-show="!memoryResults?.preferences?.length" class="text-gray-500 text-sm">
+                        No preferences detected
+                    </div>
+                </div>
+
+                <!-- Emotional Patterns -->
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-green-800 mb-3">😊 Emotions</h3>
+                    <div x-show="memoryResults?.emotional_patterns?.length > 0">
+                        <template x-for="emotion in memoryResults.emotional_patterns.slice(0, 5)">
+                            <div class="mb-2 p-2 bg-green-100 rounded text-sm">
+                                <span class="font-medium" x-text="emotion.emotion"></span>: 
+                                <span x-text="emotion.trigger"></span>
+                            </div>
+                        </template>
+                    </div>
+                    <div x-show="!memoryResults?.emotional_patterns?.length" class="text-gray-500 text-sm">
+                        No emotions detected
+                    </div>
+                </div>
+
+                <!-- Facts -->
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-purple-800 mb-3">📋 Facts</h3>
+                    <div x-show="memoryResults?.facts?.length > 0">
+                        <template x-for="fact in memoryResults.facts.slice(0, 5)">
+                            <div class="mb-2 p-2 bg-purple-100 rounded text-sm">
+                                <span class="font-medium" x-text="fact.type"></span>: 
+                                <span x-text="fact.value"></span>
+                            </div>
+                        </template>
+                    </div>
+                    <div x-show="!memoryResults?.facts?.length" class="text-gray-500 text-sm">
+                        No facts detected
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personality Engine -->
+        <div x-show="memoryResults" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">🎭 Personality Engine</h2>
+            
+            <!-- Sample Reply Input -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">Sample Reply to Transform:</label>
+                <textarea 
+                    x-model="sampleReply"
+                    class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    rows="3"
+                    placeholder="Enter a reply that will be transformed by different personalities..."></textarea>
+            </div>
+
+            <!-- Personality Style Selection -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium mb-2">Choose Personality Style:</label>
+                <div class="flex gap-4">
+                    <button 
+                        @click="selectedStyle = 'calm_mentor'"
+                        :class="selectedStyle === 'calm_mentor' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'"
+                        class="px-4 py-2 rounded-lg transition-colors">
+                        🧘 Calm Mentor
+                    </button>
+                    <button 
+                        @click="selectedStyle = 'witty_friend'"
+                        :class="selectedStyle === 'witty_friend' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'"
+                        class="px-4 py-2 rounded-lg transition-colors">
+                        😄 Witty Friend
+                    </button>
+                    <button 
+                        @click="selectedStyle = 'therapist'"
+                        :class="selectedStyle === 'therapist' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'"
+                        class="px-4 py-2 rounded-lg transition-colors">
+                        💭 Therapist
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button 
+                    @click="transformReply()" 
+                    :disabled="loading || !sampleReply.trim() || !memoryResults"
+                    class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Transform Reply
+                </button>
+                <button 
+                    @click="comparePersonalities()" 
+                    :disabled="loading || !sampleReply.trim() || !memoryResults"
+                    class="px-6 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Compare All Styles
+                </button>
+            </div>
+        </div>
+
+        <!-- Single Transformation Result -->
+        <div x-show="transformResult" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">🔄 Transformation Result</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-gray-700 mb-2">📝 Original</h3>
+                    <p class="text-gray-800" x-text="transformResult?.personality_response?.original_reply"></p>
+                </div>
+                
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-700 mb-2">
+                        ✨ <span x-text="transformResult?.personality_response?.personality_style?.replace('_', ' ').toUpperCase()"></span>
+                    </h3>
+                    <p class="text-blue-800 mb-3" x-text="transformResult?.personality_response?.transformed_reply"></p>
+                    <div class="text-sm text-blue-600">
+                        <strong>Reasoning:</strong> <span x-text="transformResult?.personality_response?.reasoning"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personality Comparison -->
+        <div x-show="comparisonResult" class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">🎭 Personality Comparison</h2>
+            
+            <!-- Original -->
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                <h3 class="font-bold text-gray-700 mb-2">📝 Original Reply</h3>
+                <p class="text-gray-800" x-text="comparisonResult?.personality_comparison?.original_reply"></p>
+            </div>
+
+            <!-- All Personality Variations -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <template x-for="variation in comparisonResult?.personality_comparison?.personality_variations">
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h3 class="font-bold mb-3 text-center py-2 rounded" 
+                            :class="{
+                                'bg-blue-100 text-blue-700': variation.personality_style === 'calm_mentor',
+                                'bg-yellow-100 text-yellow-700': variation.personality_style === 'witty_friend',
+                                'bg-green-100 text-green-700': variation.personality_style === 'therapist'
+                            }">
+                            <span x-text="variation.personality_style.replace('_', ' ').toUpperCase()"></span>
+                        </h3>
+                        
+                        <div class="mb-3">
+                            <p class="text-gray-800 text-sm" x-text="variation.transformed_reply"></p>
+                        </div>
+                        
+                        <div class="text-xs text-gray-600 border-t pt-2">
+                            <strong>Reasoning:</strong> <span x-text="variation.reasoning"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Error Display -->
+        <div x-show="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <strong class="font-bold">Error:</strong>
+            <span x-text="error"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
