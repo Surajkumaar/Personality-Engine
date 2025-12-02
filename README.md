@@ -2,6 +2,11 @@
 
 A complete AI companion system that extracts user memory and adapts personality styles for personalized responses.
 
+## 🌐 Live Deployment
+- **Frontend**: [Vercel](https://personality-engine-surajkumaar.vercel.app/) - Fast, always-on frontend
+- **Backend**: [Render](https://personality-engine.onrender.com/) - RESTful API server
+- **Note**: The backend runs on Render's free tier, which may experience cold start delays (10-30 seconds) after periods of inactivity. Please be patient on first load.
+
 ## 📋 Project Overview
 
 This system demonstrates advanced companion AI capabilities by:
@@ -32,13 +37,18 @@ Memory + Personality Engine/
 
 ## 🚀 Quick Start
 
-### Option 1: Automatic Launch (Windows)
+### Option 1: Use Live Deployment (Recommended)
+Visit the live app: **https://personality-engine-surajkumaar.vercel.app/**
+
+*Note: First API call may take 10-30 seconds due to Render's free tier cold start.*
+
+### Option 2: Automatic Launch (Windows)
 ```bash
-# Start both frontend and backend
+# Start both frontend and backend locally
 launch.bat
 ```
 
-### Option 2: Manual Setup
+### Option 3: Manual Setup
 
 **1. Start Backend**
 ```bash
@@ -76,18 +86,26 @@ python serve.py
 
 ## 🧪 Testing & Demo
 
-### CLI Demo
+### Live Web Demo (Recommended)
+Visit: **https://personality-engine-surajkumaar.vercel.app/**
+1. Try the live interface
+2. Click "Load Sample Messages"
+3. Click "Extract Memory"
+4. Test personality transformations
+5. Compare all styles side-by-side
+
+*Note: First API call may take 10-30 seconds due to backend cold start on Render's free tier.*
+
+### CLI Demo (Local)
 ```bash
 cd backend
 python comprehensive_demo.py
 ```
 
-### Web Interface Demo
-1. Visit http://localhost:3000
-2. Click "Load Sample Messages"
-3. Click "Extract Memory" 
-4. Try personality transformations
-5. Compare all styles side-by-side
+### Local Web Interface
+1. Run `launch.bat` or start servers manually
+2. Visit http://localhost:3000
+3. Follow same demo steps as live version
 
 ### Test Suite
 ```bash
@@ -161,15 +179,23 @@ How are you feeling about this approach? It's okay to take things one step at a 
 
 **Backend:**
 - FastAPI for REST API
-- Pydantic for data validation
+- Pydantic v2 for data validation
+- OpenRouter API (Mistral 7B Instruct) for LLM personality transformations
 - Python regex for pattern matching
 - Uvicorn ASGI server
+- **Deployed on**: Render (with automatic cold start management)
 
 **Frontend:**
 - HTML5 & modern CSS
 - Tailwind CSS for styling
 - Alpine.js for reactivity
 - Vanilla JavaScript
+- **Deployed on**: Vercel (edge network for global performance)
+
+**Deployment:**
+- **Backend**: Render free tier (may experience cold shutdowns)
+- **Frontend**: Vercel (always-on, globally distributed)
+- **Version Control**: GitHub with automatic deployment triggers
 
 ## 🎯 Task Requirements Fulfilled
 
