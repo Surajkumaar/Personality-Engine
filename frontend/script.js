@@ -15,7 +15,7 @@ function memoryApp() {
         // API base URL - automatically detects environment
         apiUrl: window.location.hostname === 'localhost' ? 
             'http://127.0.0.1:8000' : 
-            'https://your-backend-url.railway.app',  // Update with your deployed backend URL
+            'https://personality-engine.onrender.com',  // Your deployed backend URL
 
         // Load sample messages for demo
         loadSampleMessages() {

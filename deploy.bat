@@ -11,13 +11,14 @@ if not exist "backend\app.py" (
 )
 
 echo 📋 Choose deployment option:
-echo 1. Railway ^(Recommended^)
+echo 1. Railway ^(Backend^)
 echo 2. Docker + Cloud
-echo 3. Render  
-echo 4. Local Production Test
+echo 3. Render ^(Backend^) 
+echo 4. Vercel ^(Frontend^)
+echo 5. Local Production Test
 echo.
 
-set /p choice="Enter your choice (1-4): "
+set /p choice="Enter your choice (1-5): "
 
 if "%choice%"=="1" (
     echo 🚂 Deploying to Railway...
@@ -45,6 +46,14 @@ if "%choice%"=="1" (
     echo 4. Set environment variables
     echo 5. Deploy!
 ) else if "%choice%"=="4" (
+    echo ⚡ Vercel deployment ^(Frontend^):
+    echo 1. Install Vercel CLI: npm install -g vercel
+    echo 2. Login: vercel login
+    echo 3. Deploy: vercel
+    echo 4. Or use one-click deploy from GitHub
+    echo 5. Backend is already on Render: https://personality-engine.onrender.com
+    echo 📚 See VERCEL_DEPLOY.md for detailed guide
+) else if "%choice%"=="5" (
     echo 🏠 Testing production build locally...
     cd backend
     set ENVIRONMENT=production

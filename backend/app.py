@@ -24,7 +24,9 @@ allowed_origins = [
     "http://localhost:3000",
     "http://localhost:3001", 
     "http://localhost:3002",
-    "https://your-frontend-domain.vercel.app",  # Update with your frontend URL
+    "http://127.0.0.1:3000",
+    "https://*.vercel.app",  # Allow all Vercel subdomains
+    "https://personality-engine-frontend.vercel.app",  # Specific Vercel domain
     "https://your-frontend-domain.netlify.app",  # Update with your frontend URL
 ]
 
