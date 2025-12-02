@@ -25,7 +25,7 @@ if "%choice%"=="1" (
     echo 2. Login: railway login
     echo 3. Initialize: railway init
     echo 4. Set environment variables in Railway dashboard:
-    echo    - OPENROUTER_API_KEY=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
+    echo    - OPENROUTER_API_KEY=your_openrouter_api_key_here
     echo    - ENVIRONMENT=production
     echo 5. Deploy: railway up
 ) else if "%choice%"=="2" (

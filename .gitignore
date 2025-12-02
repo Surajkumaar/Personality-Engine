@@ -50,6 +50,8 @@ backend/test/venv/
 *.pem
 secrets/
 .secrets
+*api_key*
+*API_KEY*
 
 # IDE and editor files
 .vscode/
