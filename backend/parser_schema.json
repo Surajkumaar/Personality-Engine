@@ -1,0 +1,43 @@
+{
+"$schema": "http://json-schema.org/draft-07/schema#",
+"type": "object",
+"properties": {
+"preferences": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"category": {"type":"string"},
+"value": {"type":"string"},
+"confidence": {"type":"number"}
+},
+"required":["category","value"]
+}
+},
+"emotional_patterns": {
+"type": "array",
+"items": {
+"type":"object",
+"properties": {
+"tone": {"type":"string"},
+"frequency": {"type":"integer"},
+"examples": {"type":"array","items":{"type":"string"}}
+},
+"required":["tone","frequency"]
+}
+},
+"facts": {
+"type":"array",
+"items": {
+"type":"object",
+"properties": {
+"fact": {"type":"string"},
+"type": {"type":"string"},
+"source_message_index": {"type":"integer"}
+},
+"required":["fact","type"]
+}
+}
+},
+"required":["preferences","emotional_patterns","facts"]
+}
